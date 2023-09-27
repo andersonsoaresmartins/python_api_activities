@@ -28,12 +28,13 @@ class Persons(Base):
         db_session.add(self)
         db_session.commit()
 
-
     def delete(self):
         db_session.delete(self)
         db_session.commit()
 
 # Classe Persons
+
+
 class Activities(Base):
     __tablename__ = 'activities'
     id = Column(Integer, primary_key=True)
@@ -48,10 +49,28 @@ class Activities(Base):
         db_session.add(self)
         db_session.commit()
 
+    def delete(self):
+        db_session.delete(self)
+        db_session.commit()
+
+
+class Users(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    login = Column(String(20), unique=True)
+    passwd = Column(String(20))
+
+    def __repr__(self):
+        return '<Users {}>' .format(self.login)
+
+    def save(self):
+        db_session.add(self)
+        db_session.commit()
 
     def delete(self):
         db_session.delete(self)
         db_session.commit()
+
 
 def init_db():
     Base.metadata.create_all(bind=engine)

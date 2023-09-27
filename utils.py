@@ -1,4 +1,4 @@
-from models import Persons
+from models import Persons, Users
 
 
 def insertPersons():
@@ -36,9 +36,22 @@ def deletePersons():
     person.delete()
 
 
+def insertUser(login, passwd):
+    user = Users(login=login, passwd=passwd)
+    user.save()
+
+
+def showUsers():
+    users = Users.query.all()
+    print(users)
+
+
+
+
 if __name__ == '__main__':
-   insertPersons()
+   #insertPersons()
    #modifyPersons()
-   searchPersons()
+   #searchPersons()
    #deletePersons()
-   
+   insertUser('admin', 'admin')
+   showUsers()

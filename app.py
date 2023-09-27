@@ -1,13 +1,32 @@
 from flask import Flask, request
 from flask_restful import Resource, Api
-from models import Persons, Activities
+from models import Persons, Activities, Users
+from flask_httpauth import HTTPBasicAuth
 
 
+auth = HTTPBasicAuth()
 app = Flask(__name__)
 api = Api(app)
 
 
+#@auth.verify_password
+#def verification(login, passwd):
+#    if not (login, passwd):
+#        return False
+#
+#    return USERS.get(login) == passwd
+#
+
+@auth.verify_password
+def verification(login, passwd):
+    if not (login, passwd):
+        return False
+
+    return Users.query.filter_by(login=login, passwd=passwd).first()
+    
+
 class Person(Resource):
+    @auth.login_required
     def get(self, name):
         person = Persons.query.filter_by(name=name).first()
 
@@ -57,6 +76,7 @@ class Person(Resource):
 
 
 class PersonsList(Resource):
+    @auth.login_required
     def get(self):
         persons = Persons.query.all()
         response = [{'id': i.id, 'name': i.name, 'age': i.age}
@@ -86,7 +106,8 @@ class ActivitiesList(Resource):
     def post(self):
         data = request.json
         person = Persons.query.filter_by(name=data['person']).first()
-        activity = Activities(name=data['name'], person=person)
+        activity = Activities(name=data['name'], 
+        person=person)
         activity.save()
         response = {
             'person': activity.person.name,
